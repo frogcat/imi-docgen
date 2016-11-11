@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>imi-docgen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="print.css" media="print" />
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.1.0/markdown-it.min.js"></script>
+  <script src="https://unpkg.com/markdown-it-deflist@2.0.1/dist/markdown-it-deflist.js"></script>
+  <script src="https://unpkg.com/markdown-it-footnote@3.0.1/dist/markdown-it-footnote.js"></script>
+  <script src="markdown-it-imi.js"></script>
+</head>
+
+<body>
+  <div id="container">
+    <form>
+      <textarea title="ここに UTF-8 の Markdown ファイルをドラッグ＆ドロップすると反映されます"></textarea>
+      <button>render</button>
+    </form>
+    <hr/>
+    <header>
+      <img src="http://imi.go.jp/prep/IMITopNew.png" />
+      <img src="http://imi.go.jp/prep/goila.png" />
+    </header>
+    <article>
+    </article>
+    <footer>
+      <a href="http://www.meti.go.jp/">経済産業省（法人番号 4000012090001）</a>,
+      <a href="http://www.ipa.go.jp/">独立行政法人 情報処理推進機構（法人番号 5010005007126）</a>
+    </footer>
+  </div>
+
+  <script>
+    $("form").submit(function() {
+      try {
+        $("article").html(window.markdownit()
+          .use(window.markdownitDeflist)
+          .use(window.markdownitFootnote)
+          .use(window.markdownitIMI, true)
+          .render($("textarea").val()));
+      } catch (e) {
+        console.log(e);
+      }
+      return false;
+    });
+
+    $.get("example.md").then(function(txt) {
+      $("textarea").val(txt);
+      $("form").submit();
+    });
+
+    $("textarea").on("dragenter,dragover", function(e) {
+      return false;
+    }).on("drop", function(e) {
+      var file = e.originalEvent.dataTransfer.files[0];
+      var fileReader = new FileReader();
+      fileReader.onload = function(event) {
+        $("textarea").val(event.target.result);
+        $("form").submit();
+      }
+      fileReader.readAsText(file);
+      return false;
+    });
+  </script>
+</body>
+
+</html>

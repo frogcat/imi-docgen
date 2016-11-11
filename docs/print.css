@@ -1,0 +1,19 @@
+body {
+  background: none !important;
+}
+
+a {
+  color: #0000ee !important;
+}
+
+h1 {
+/*  page-break-before: always;*/
+}
+
+#container {
+  margin: 0 !important;
+}
+
+form {
+  display: none !important;
+}

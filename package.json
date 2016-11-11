@@ -1,0 +1,26 @@
+{
+  "name": "imi-docgen",
+  "version": "1.0.0",
+  "description": "documentation tool for IMI",
+  "main": "main.js",
+  "scripts": {
+    "browserify": "./node_modules/.bin/browserify -s markdownitIMI -o docs/markdown-it-imi.js markdown-it-imi.js",
+    "test": "node main.js docs/example.md > docs/example.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frogcat/imi-docgen.git"
+  },
+  "author": "frogcat@github",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/frogcat/imi-docgen/issues"
+  },
+  "homepage": "https://github.com/frogcat/imi-docgen#readme",
+  "dependencies": {
+    "markdown-it": "^8.1.0"
+  },
+  "devDependencies": {
+    "browserify": "^13.1.1"
+  }
+}

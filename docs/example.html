@@ -1,0 +1,777 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>DMD 仕様</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="print.css" media="print"/>
+</head>
+
+<body>
+<div id="container">
+  <header>
+    <img src="http://imi.go.jp/prep/IMITopNew.png"/>
+    <img src="http://imi.go.jp/prep/goila.png"/>
+  </header>
+  <article>
+  <h1>DMD 仕様</h1>
+
+<ul class='toc'><li class='level1'><a href='#crossref-sec-1'>1. はじめに  </a></li>
+<li class='level1'><a href='#crossref-sec-2'>2. 概要</a></li>
+<li class='level1'><a href='#crossref-sec-3'>3. DMD の構造</a></li>
+<li class='level2'><a href='#crossref-sec-3-1'>3.1 DMD ヘッダー</a></li>
+<li class='level3'><a href='#crossref-sec-3-1-1'>3.1.1 XML 版</a></li>
+<li class='level3'><a href='#crossref-sec-3-1-2'>3.1.2 RDF 版</a></li>
+<li class='level2'><a href='#crossref-sec-3-2'>3.2 XML のデータモデルを記述するファイル群 </a></li>
+<li class='level3'><a href='#crossref-sec-3-2-1'>3.2.1 XML用語再定義スキーマ</a></li>
+<li class='level3'><a href='#crossref-sec-3-2-2'>3.2.2 XML データスキーマ</a></li>
+<li class='level2'><a href='#crossref-sec-3-3'>3.3 RDF のデータモデルを記述するファイル群 </a></li>
+<li class='level3'><a href='#crossref-sec-3-3-1'>3.3.1 RDF データモデル記述</a></li>
+<li class='level2'><a href='#crossref-sec-3-4'>3.4 項目データ </a></li>
+<li class='level2'><a href='#crossref-sec-3-5'>3.5 ドキュメント</a></li>
+<li class='level2'><a href='#crossref-sec-3-6'>3.6 サンプル</a></li>
+<li class='level2'><a href='#crossref-sec-3-7'>3.7 項目マッピング</a></li>
+</ul><h1 id="crossref-sec-1" title="1. はじめに  "><span>1.</span>
+はじめに  </h1>
+<p>DMD(Data Model Description)は、共通語彙基盤の一部として、データ交換を行う当事
+者間、データ作成者同士、及び、データ作成者とデータ利用者との間でデータモデルを共
+有することを目的とし設計された、データモデルを記述するためのものである。本書は、
+DMD の仕様について記述する。</p>
+<p class="note">このパラグラフはコラム機能のデモンストレーションである。
+このパラグラフはコラム機能のデモンストレーションである。
+このパラグラフはコラム機能のデモンストレーションである。
+</p>
+<figure class="lst" id="crossref-lst-1" title="例1">
+<figcaption>例1: hello</figcaption><pre><code>このパラグラフはコラム機能のデモンストレーションである。
+このパラグラフはコラム機能のデモンストレーションである。
+このパラグラフはコラム機能のデモンストレーションである。
+</code></pre></figure><p>共通語彙基盤は、次の2つの語彙で構成されます。</p>
+<p>コア語彙
+:   分野を超えて使われる共通性のある用語（【人】【氏名】など）の集合</p>
+<p>ドメイン語彙
+:   コア語彙の概念を継承して定義した、分野固有の用語の集合</p>
+<p>全角空白だけの行</p>
+<p></p>
+<p>全角空白だけの行</p>
+<h1 id="crossref-sec-2" title="2. 概要"><span>2.</span>
+概要</h1>
+<p><a href="#crossref-sec-1">1. はじめに  </a> では本ドキュメントの目的を述べた。
+DMD は、データ構造の定義とデータの各項目に対する入力制限や使用可能な文字コレク
+ションを規定することによりデータモデルを定義するものであり、コンピュータがデータ
+を処理する際に有用な情報と、人がデータの内容を正しく理解できるようにするための情
+報をパッケージ化したものである。DMD は、DMD 自体を説明するものとして、<a href="#crossref-tbl-1">表1</a>に示すメタデータをもつ。</p>
+<table id="crossref-tbl-1" title="表1">
+<caption>表1: DMD のメタデータ</caption><thead>
+<tr>
+<th>DMD のメタデータ</th>
+<th>要素</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL</td>
+<td>DMD を取得することができる場所</td>
+</tr>
+<tr>
+<td>作成日</td>
+<td>作成された日付</td>
+</tr>
+<tr>
+<td>最終更新日</td>
+<td>最後に更新された日付</td>
+</tr>
+<tr>
+<td>説明</td>
+<td>DMD の概要説明。詳細な説明はドキュメント内に記述される。</td>
+</tr>
+<tr>
+<td>作成者</td>
+<td>作成者の名称及び参照先となるURL</td>
+</tr>
+<tr>
+<td>名称</td>
+<td>DMD の名称</td>
+</tr>
+<tr>
+<td>ライセンス</td>
+<td>DMD のライセンス</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td>DMD のバージョン</td>
+</tr>
+<tr>
+<td>直前のバージョン</td>
+<td>当該DMD の1 つ以前のバージョンの</td>
+</tr>
+<tr>
+<td>DMD への参照</td>
+<td>最新版 当該DMD の最新のバージョンのDMDへの参照</td>
+</tr>
+<tr>
+<td>既定の文字コレクション</td>
+<td>文字列を値とするデータ項目に使用可能な文字コレクションの既定値</td>
+</tr>
+</tbody>
+</table>
+
+<p>既定の文字コレクションは、<strong>JIS X 0221 附属書A</strong> に規定される組番号によって記載する。
+文字コレクションが２つ以上指定された場合は、その和集合を使用可能な文字のコレクシ
+ョンとする。</p>
+<h1 id="crossref-sec-3" title="3. DMD の構造"><span>3.</span>
+DMD の構造</h1>
+<p>DMD はzip 形式のファイルであり、<a href="#crossref-fig-1">図1</a>に示すように、下記のファイ
+ルが含まれる。</p>
+<ul>
+<li>DMD ヘッダー(XML 版及びRDF 版)【必須】</li>
+<li>XML のデータモデルを記述するファイル群
+<ul>
+<li>XML 用語再定義スキーマ【再定義をする場合は必須】</li>
+<li>XML データスキーマ【必須】</li>
+</ul>
+</li>
+<li>RDF のデータモデルを記述するファイル群
+<ul>
+<li>RDF データモデル記述【必須】</li>
+</ul>
+</li>
+<li>項目データ</li>
+<li>ドキュメント</li>
+<li>サンプル</li>
+<li>項目マッピング【必須】</li>
+</ul>
+<figure class="fig" id="crossref-fig-1" title="図1">
+<img src="dmd_spec_fig1.png"/><figcaption>図1: DMDの構造</figcaption></figure>
+<p>DMD ヘッダーXML 版及びRDF 版のファイル名は、それぞれ <code>header.xml</code>、<code>header.ttl</code> と
+する。その他のファイルのファイル名については本仕様では定めない。</p>
+<h2 id="crossref-sec-3-1" title="3.1 DMD ヘッダー"><span>3.1</span>
+DMD ヘッダー</h2>
+<p>DMD ヘッダーは、DMD のメタデータ（<a href="#crossref-tbl-2">表2</a> を参照）、及び、DMD に含まれるファイ
+ル（<a href="#crossref-tbl-3">表3</a> を参照）に関する情報をもつ。</p>
+<p>DMD ヘッダーはXML 版とRDF 版が用意され、それらは等価な内容をもつ。XML 版及
+びRDF 版の双方がDMD に含まれていなければならない。</p>
+<h3 id="crossref-sec-3-1-1" title="3.1.1 XML 版"><span>3.1.1</span>
+XML 版</h3>
+<p>DMD ヘッダー XML 版は、http://imi.ipa.go.jp/ns/dmd に公開されるスキーマに従って、記述される。本節の最後にスキーマを示す。</p>
+<p>ここで、DMD のメタデータとそれを記述するためのXML 要素の対応は表 2 のようにな
+る（表中では、xmlns:dmd=&quot;http://imi.ipa.go.jp/ns/dmd&quot; のように名前空間が定義されているものとして記述してある）。</p>
+<table id="crossref-tbl-2" title="表2">
+<caption>表2: DMD のメタデータを記述するXML 要素 </caption><thead>
+<tr>
+<th>DMD のメタデータ</th>
+<th>要素</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL</td>
+<td>dmd:URI</td>
+</tr>
+<tr>
+<td>作成日</td>
+<td>dmd:CreationDate</td>
+</tr>
+<tr>
+<td>最終更新日</td>
+<td>dmd:LastModificationDate</td>
+</tr>
+<tr>
+<td>説明</td>
+<td>dmd:Description</td>
+</tr>
+<tr>
+<td>作成者</td>
+<td>dmd:Publisher</td>
+</tr>
+<tr>
+<td>名称</td>
+<td>dmd:Name</td>
+</tr>
+<tr>
+<td>ライセンス</td>
+<td>dmd:License</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td>dmd:Version</td>
+</tr>
+<tr>
+<td>直前のバージョン</td>
+<td>dmd:Previous</td>
+</tr>
+<tr>
+<td>最新版</td>
+<td>dmd:Latest</td>
+</tr>
+<tr>
+<td>既定の文字コレクション</td>
+<td>dmd:CharCollection</td>
+</tr>
+</tbody>
+</table>
+
+<p>DMD に含めるファイルは、Component 要素を用いて記述する。本仕様で求めるファイ
+ルの種類とType 属性の値の関係を表 3 に示す。</p>
+<table id="crossref-tbl-3" title="表3">
+<caption>表3: ファイルの種類とType 属性の値 </caption><thead>
+<tr>
+<th>ファイルの種類</th>
+<th>Type 属性の値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DMD</td>
+<td>ヘッダー header</td>
+</tr>
+<tr>
+<td>XML</td>
+<td>データスキーマ schema</td>
+</tr>
+<tr>
+<td>XML</td>
+<td>用語再定義スキーマ redefine-schema</td>
+</tr>
+<tr>
+<td>RDF</td>
+<td>データモデル記述 data-shape</td>
+</tr>
+<tr>
+<td>項目データ</td>
+<td>item-data</td>
+</tr>
+<tr>
+<td>ドキュメント</td>
+<td>document</td>
+</tr>
+<tr>
+<td>サンプル</td>
+<td>sample</td>
+</tr>
+<tr>
+<td>項目マッピング</td>
+<td>mapping</td>
+</tr>
+</tbody>
+</table>
+<figure class="lst" id="crossref-lst-2" title="例2">
+<figcaption>例2:  DMD ヘッダの XML Schema</figcaption><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;xsd:schema xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;
+targetNamespace=&quot;http://imi.ipa.go.jp/ns/dmd&quot;
+xmlns:dmd=&quot;http://imi.ipa.go.jp/ns/dmd&quot;&gt;
+  &lt;xsd:import namespace=&quot;http://www.w3.org/XML/1998/namespace&quot;
+  schemaLocation=&quot;IMI-xml-lang.xsd&quot;/&gt;
+  &lt;xsd:element name=&quot;DMD&quot;&gt;
+    &lt;xsd:complexType&gt;
+      &lt;xsd:sequence&gt;
+        &lt;xsd:element ref=&quot;dmd:URI&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+        &lt;xsd:element ref=&quot;dmd:Name&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+        &lt;xsd:element ref=&quot;dmd:CreationDate&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot;/&gt;
+        &lt;xsd:element ref=&quot;dmd:LastModificationDate&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot;/&gt;
+        &lt;xsd:element ref=&quot;dmd:Description&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+        &lt;xsd:element ref=&quot;dmd:Publisher&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot;/&gt;
+        &lt;xsd:element ref=&quot;dmd:License&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot;/&gt;
+        &lt;xsd:element ref=&quot;dmd:Version&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot;/&gt;
+        &lt;xsd:element ref=&quot;dmd:Previous&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+        &lt;xsd:element ref=&quot;dmd:Latest&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+        &lt;xsd:element ref=&quot;dmd:CharCollection&quot; minOccurs=&quot;0&quot;
+  maxOccurs=&quot;unbounded&quot;/&gt;
+        &lt;xsd:element ref=&quot;dmd:Component&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+      &lt;/xsd:sequence&gt;
+    &lt;/xsd:complexType&gt;
+  &lt;/xsd:element&gt;
+  &lt;xsd:element name=&quot;URI&quot; type=&quot;xsd:anyURI&quot;/&gt;
+  &lt;xsd:element name=&quot;Name&quot; type=&quot;dmd:StringWithXmlLang&quot;/&gt;
+  &lt;xsd:element name=&quot;CreationDate&quot; type=&quot;xsd:date&quot;/&gt;
+  &lt;xsd:element name=&quot;LastModificationDate&quot; type=&quot;xsd:date&quot;/&gt;
+  &lt;xsd:element name=&quot;Description&quot; type=&quot;dmd:StringWithXmlLang&quot;/&gt;
+  &lt;xsd:element name=&quot;Version&quot; type=&quot;xsd:string&quot;/&gt;
+  &lt;xsd:element name=&quot;Previous&quot; type=&quot;xsd:anyURI&quot;/&gt;
+  &lt;xsd:element name=&quot;Latest&quot; type=&quot;xsd:anyURI&quot;/&gt;
+  &lt;xsd:element name=&quot;CharCollection&quot; type=&quot;xsd:integer&quot;/&gt;
+  &lt;xsd:element name=&quot;Publisher&quot;&gt;
+    &lt;xsd:complexType&gt;
+      &lt;xsd:sequence&gt;
+        &lt;xsd:element ref=&quot;dmd:URI&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+        &lt;xsd:element ref=&quot;dmd:Name&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+      &lt;/xsd:sequence&gt;
+    &lt;/xsd:complexType&gt;
+  &lt;/xsd:element&gt;
+  &lt;xsd:element name=&quot;Component&quot;&gt;
+    &lt;xsd:complexType&gt;
+      &lt;xsd:sequence&gt;
+        &lt;xsd:element ref=&quot;dmd:Description&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+        &lt;xsd:element ref=&quot;dmd:License&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+      &lt;/xsd:sequence&gt;
+      &lt;xsd:attribute name=&quot;file&quot; type=&quot;xsd:anyURI&quot;/&gt;
+      &lt;xsd:attribute name=&quot;media-type&quot; type=&quot;xsd:string&quot;/&gt;
+      &lt;xsd:attribute name=&quot;type&quot;&gt;
+        &lt;xsd:simpleType&gt;
+          &lt;xsd:restriction base=&quot;xsd:string&quot;&gt;
+            &lt;xsd:enumeration value=&quot;header&quot;/&gt;
+            &lt;xsd:enumeration value=&quot;schema&quot;/&gt;
+            &lt;xsd:enumeration value=&quot;redefine-schema&quot;/&gt;
+            &lt;xsd:enumeration value=&quot;data-shape&quot;/&gt;
+            &lt;xsd:enumeration value=&quot;item-data&quot;/&gt;
+            &lt;xsd:enumeration value=&quot;document&quot;/&gt;
+            &lt;xsd:enumeration value=&quot;sample&quot;/&gt;
+            &lt;xsd:enumeration value=&quot;mapping&quot;/&gt;
+          &lt;/xsd:restriction&gt;
+        &lt;/xsd:simpleType&gt;
+      &lt;/xsd:attribute&gt;
+    &lt;/xsd:complexType&gt;
+  &lt;/xsd:element&gt;
+  &lt;xsd:element name=&quot;License&quot;&gt;
+    &lt;xsd:complexType&gt;
+      &lt;xsd:sequence&gt;
+        &lt;xsd:element ref=&quot;dmd:URI&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+        &lt;xsd:element ref=&quot;dmd:Name&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot;/&gt;
+      &lt;/xsd:sequence&gt;
+    &lt;/xsd:complexType&gt;
+  &lt;/xsd:element&gt;
+  &lt;xsd:complexType name=&quot;StringWithXmlLang&quot;&gt;
+    &lt;xsd:simpleContent&gt;
+      6
+      &lt;xsd:extension base=&quot;xsd:string&quot;&gt;
+        &lt;xsd:attribute ref=&quot;xml:lang&quot;/&gt;
+      &lt;/xsd:extension&gt;
+    &lt;/xsd:simpleContent&gt;
+  &lt;/xsd:complexType&gt;
+&lt;/xsd:schema&gt;
+</code></pre></figure><h3 id="crossref-sec-3-1-2" title="3.1.2 RDF 版"><span>3.1.2</span>
+RDF 版</h3>
+<p>DMD ヘッダー（RDF 版）は下に示す形式で記述される。また、ヘッダーはTurtle 形式
+で記述するものとする。</p>
+<p>DMD ヘッダー（RDF 版）では、<a href="#crossref-tbl-4">表4</a> に示す語彙を用いる。</p>
+<table id="crossref-tbl-4" title="表4">
+<caption>表4: DMD ヘッダーで使用される語彙一覧 </caption><thead>
+<tr>
+<th>DMD ヘッダー（RDF 版）で用いる語彙</th>
+<th>本仕様で用いるプレフィックス</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>http://www.w3.org/2002/07/owl#</td>
+<td>owl:</td>
+</tr>
+<tr>
+<td>http://www.w3.org/1999/02/22-rdf-syntax-ns#</td>
+<td>rdf:</td>
+</tr>
+<tr>
+<td>http://www.w3.org/2000/01/rdf-schema#</td>
+<td>rdfs:</td>
+</tr>
+<tr>
+<td>http://www.w3.org/2001/XMLSchema#</td>
+<td>xsd:</td>
+</tr>
+<tr>
+<td>http://purl.org/dc/terms/</td>
+<td>dcterms:</td>
+</tr>
+<tr>
+<td>http://www.w3.org/ns/adms#</td>
+<td>adms:</td>
+</tr>
+<tr>
+<td>http://www.w3.org/ns/dcat#</td>
+<td>dcat:</td>
+</tr>
+<tr>
+<td>http://imi.ipa.go.jp/ns/dmd#</td>
+<td>dmd:</td>
+</tr>
+</tbody>
+</table>
+
+<p>DMD ヘッダーにおいて、DMD は、adms:Asset クラスのインスタンスとして表現され、
+プロパティとしてDMD のメタデータとファイルの一覧をもつ。</p>
+<p>DMD のメタデータは <a href="#crossref-tbl-5">表5</a>  に示す述語を用いて記述される。</p>
+<table id="crossref-tbl-5" title="表5">
+<caption>表5:  DMD のメタデータと述語</caption><thead>
+<tr>
+<th>DMD のメタデータ</th>
+<th>述語</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>作成日</td>
+<td>dcterms:issued</td>
+</tr>
+<tr>
+<td>最終更新日</td>
+<td>dcterms:modified</td>
+</tr>
+<tr>
+<td>説明</td>
+<td>dcterms:description</td>
+</tr>
+<tr>
+<td>作成者</td>
+<td>dcterms:publisher</td>
+</tr>
+<tr>
+<td>名称</td>
+<td>dcterms:title</td>
+</tr>
+<tr>
+<td>ライセンス</td>
+<td>dcterms:license</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td>owl:versionInfo</td>
+</tr>
+<tr>
+<td>直前のバージョン</td>
+<td>adms:previous</td>
+</tr>
+<tr>
+<td>最新版</td>
+<td>adms:last</td>
+</tr>
+<tr>
+<td>既定の文字コレクション</td>
+<td>dmd:charCollection</td>
+</tr>
+</tbody>
+</table>
+
+<p>ファイルの一覧は、dcat:distribution により記述される。スキーマの所在地は、データ
+モデルの決定に合わせて指定方法を決定する。</p>
+<p>各ファイルは、 adms:AssetDistribution クラスのインスタンスとして表現され、それぞれ、dcterms:type によりファイル形式が指定される。</p>
+<p>次のでは、DMD ヘッダー（RDF 版）が header.ttl として作成されている。</p>
+<figure class="lst" id="crossref-lst-3" title="例3">
+<figcaption>例3: DMD ヘッダー（RDF 版）の例 </figcaption><pre><code>@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt;.
+@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;.
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+@prefix adms: &lt;http://www.w3.org/ns/adms#&gt;.
+@prefix dcat: &lt;http://www.w3.org/ns/dcat#&gt;.
+@prefix dmd: &lt;http://imi.ipa.go.jp/ns/dmd#&gt;.
+&lt;http://example.org/imins/00068574/&gt; a adms:Asset ;
+dcterms:type dmd:DataModelDescription ; # クラスではなく dcterms:type でDMD であることを表現する
+  dcterms:issued &quot;2015-09-01&quot;^^xsd:date ;
+  dcterms:modified &quot;2015-10-22&quot;^^xsd:date ;
+  dcterms:description &quot;犯罪発生情報を表現するための DMD&quot;@ja ;
+  dcterms:publisher &lt;http://example.org/user/0123456789&gt; ;
+  dcterms:title &quot;犯罪発生情報 DMD&quot;@ja ;
+  dcterms:license &lt;http://creativecommons.org/licenses/by/3.0/&gt; ;
+  owl:versionInfo &quot;1.0.0&quot; ;
+  adms:previous &lt;http://example.org/imins/00068573/&gt; ;
+  adms:last &lt;http://example.org/imins/00068575/&gt; ;
+  dcat:distribution &lt;header.ttl&gt; ;
+  dcat:distribution &lt;crime.xsd&gt; ;
+  dcat:distribution &lt;redefine.xsd&gt; ;
+  dcat:distribution &lt;crime-shacl.ttl&gt; ;
+  dcat:distribution &lt;item-data.json&gt; ;
+  dcat:distribution &lt;document.pdf&gt; ;
+  dcat:distribution &lt;document.docx&gt; ;
+  dcat:distribution &lt;sample.jsonld&gt; ;
+  dcat:distribution &lt;mapping-info.json&gt; ;
+  dmd:charCollection &quot;258&quot;^^xsd:integer.
+
+## DMD ヘッダー
+&lt;header.ttl&gt; a adms:AssetDistribution ;
+  dcterms:type dmd:Header .
+
+## XML のデータモデルを記述するファイル群(XML スキーマ)
+&lt;redefine.xsd&gt; a adms:AssetDistribution ;
+  dcterms:type dmd:XMLSchema .
+&lt;crime.xsd&gt; a adms:AssetDistribution ;
+  dcterms:type dmd:XMLRedefineSchema .
+
+## RDF のデータモデルを記述するファイル群
+### RDF データシェイプ
+&lt;crime-shacl.ttl&gt; a adms:AssetDistribution ;
+  dcterms:type dmd:RDFDataShape .
+
+### 項目データ
+&lt;item-data.json&gt; a adms:AssetDistribution ;
+  dcterms:type dmd:ItemData .
+
+## ドキュメント
+&lt;document.pdf&gt; a adms:AssetDistribution ;
+  dcterms:type dmd:Documentation .
+&lt;document.docx&gt; a adms:AssetDistribution ;
+  dcterms:type dmd:Documentation .
+
+## サンプル
+&lt;sample.ttl&gt; a adms:AssetDistribution ;
+  dcterms:type dmd:Sample .
+
+## 項目マッピング
+&lt;mapping-info.json&gt; a adms:AssetDistribution ;
+  dcterms:type dmd:Mapping .
+</code></pre></figure><h2 id="crossref-sec-3-2" title="3.2 XML のデータモデルを記述するファイル群 "><span>3.2</span>
+XML のデータモデルを記述するファイル群 </h2>
+<p>XMLのデータに対応するデータモデルは、1つ以上のIMI 語彙の用語を再定義（redefine）
+したXML スキーマ（用語再定義スキーマ）及び再定義した用語を使用しデータモデルを定
+義したXML スキーマ（データスキーマ）の２つ以上のXML スキーマファイルによって定
+義される。</p>
+<p>データ入力者に対して、項目毎にそこに許される文字コレクションに係る情報を伝える
+ことができるようにすることが求められる</p>
+<h3 id="crossref-sec-3-2-1" title="3.2.1 XML用語再定義スキーマ"><span>3.2.1</span>
+XML用語再定義スキーマ</h3>
+<p>使用するプロパティの選択、プロパティの値の制限及び各プロパティの出現回数などを
+変更してIMI 語彙のクラス用語を再定義するXML スキーマ。</p>
+<p>この例では、場所型の住所プロパティを必須項目に変更している。</p>
+<figure class="lst" id="crossref-lst-4" title="例4">
+<figcaption>例4: XML 用語再定義スキーマの例 </figcaption><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;xsd:schema
+targetNamespace=&quot;http://imi.ipa.go.jp/ns/core/2&quot;
+xmlns:ic=&quot;http://imi.ipa.go.jp/ns/core/2&quot;
+xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;
+&gt;
+  &lt;xsd:redefine schemaLocation=&quot;Core231.xsd&quot;&gt;
+    &lt;xsd:group name=&quot;場所型-固有要素グループ&quot;&gt;
+      &lt;xsd:sequence&gt;
+        &lt;xsd:element ref=&quot;ic:名称&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+        &lt;xsd:element ref=&quot;ic:通称&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+        &lt;xsd:element ref=&quot;ic:地理識別子&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+        &lt;xsd:element ref=&quot;ic:住所&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot;/&gt;
+        &lt;xsd:element ref=&quot;ic:地理座標&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+      &lt;/xsd:sequence&gt;
+    &lt;/xsd:group&gt;
+  &lt;/xsd:redefine&gt;
+&lt;/xsd:schema&gt;
+</code></pre></figure><h3 id="crossref-sec-3-2-2" title="3.2.2 XML データスキーマ"><span>3.2.2</span>
+XML データスキーマ</h3>
+<p>データモデルを定義するためのXML スキーマ。型の拡張（extension）によるプロパテ
+ィの追加及び型の制約（restriction）によるプロパティの選択を行う。ルートノードは特定の型を０個以上無制限に含むことができる要素とし、その名称は任意とする。</p>
+<figure class="lst" id="crossref-lst-5" title="例5">
+<figcaption>例5: XML データスキーマの例 </figcaption><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;xsd:schema xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;
+targetNamespace=&quot;http://example.org/imins/00068574/&quot;
+xmlns:ex2=&quot;http://example.org/imins/00068574/&quot;
+xmlns:ex=&quot;http://imi.ipa.go.jp/ns/司法ドメイン&quot;
+xmlns:ic=&quot;http://imi.ipa.go.jp/ns/core/2&quot;&gt;
+  &lt;xsd:import namespace=&quot;http://imi.ipa.go.jp/ns/core/2&quot;
+  schemaLocation=&quot;redefine.xsd&quot;/&gt;
+  &lt;xsd:import namespace=&quot;http://imi.ipa.go.jp/ns/司法ドメイン&quot;
+  schemaLocation=&quot;IMI-司法ドメイン用語.xsd&quot;/&gt;
+  &lt;xsd:element name=&quot;犯罪発生情報リスト&quot;&gt;
+    &lt;xsd:complexType&gt;
+      &lt;xsd:sequence&gt;
+        &lt;xsd:element ref=&quot;ex2:犯罪発生情報&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+      &lt;/xsd:sequence&gt;
+    &lt;/xsd:complexType&gt;
+  &lt;/xsd:element&gt;
+  &lt;xsd:element name=&quot;犯罪発生情報&quot; type=&quot;ex2:犯罪発生情報型&quot;/&gt;
+  &lt;xsd:complexType name=&quot;犯罪発生情報型&quot;&gt;
+    &lt;xsd:annotation&gt;
+      &lt;xsd:documentation xml:lang=&quot;ja&quot;&gt;
+        犯罪発生情報を表現するためのデータ型
+      &lt;/xsd:documentation&gt;
+    &lt;/xsd:annotation&gt;
+    &lt;xsd:complexContent&gt;
+      &lt;xsd:extension base=&quot;ic:事物型&quot;&gt;
+        &lt;xsd:sequence&gt;
+          &lt;xsd:element ref=&quot;ex2:犯罪&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+          &lt;xsd:element ref=&quot;ex2:発生箇所&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+          &lt;xsd:element ref=&quot;ex2:発生日時&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+          &lt;xsd:element ref=&quot;ex2:被害者&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+        &lt;/xsd:sequence&gt;
+      &lt;/xsd:extension&gt;
+    &lt;/xsd:complexContent&gt;
+  &lt;/xsd:complexType&gt;
+  &lt;xsd:element name=&quot;犯罪&quot; type=&quot;ex:犯罪型&quot;/&gt;
+  &lt;xsd:element name=&quot;発生箇所&quot; type=&quot;ic:場所型&quot;/&gt;
+  &lt;xsd:element name=&quot;発生日時&quot; type=&quot;ex:司法日時型&quot;/&gt;
+  &lt;xsd:element name=&quot;被害者&quot; type=&quot;ex:司法人型&quot;/&gt;
+&lt;/xsd:schema&gt;
+</code></pre></figure><h2 id="crossref-sec-3-3" title="3.3 RDF のデータモデルを記述するファイル群 "><span>3.3</span>
+RDF のデータモデルを記述するファイル群 </h2>
+<h3 id="crossref-sec-3-3-1" title="3.3.1 RDF データモデル記述"><span>3.3.1</span>
+RDF データモデル記述</h3>
+<p>使用するプロパティの選択、プロパティの値の制限及び各プロパティの出現回数を指定する制約記述である。</p>
+<p>上記の制約は、<a href="http://www.w3.org/TR/2016/WD-shacl-20160530/">Shapes Constraint Language (SHACL)</a>の規定に基づき記述する。</p>
+<p>次に、その記述例を示す。</p>
+<figure class="lst" id="crossref-lst-6" title="例6">
+<figcaption>例6: RDF データモデルの記述例 </figcaption><pre><code>@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;.
+@prefix sh: &lt;http://www.w3.org/ns/shacl#&gt;.
+@prefix ic: &lt;http://imi.ipa.go.jp/ns/core/rdf#&gt;.
+@base &lt;http://example.org/shape/place&gt;.
+&lt;#MAIN&gt; a sh:Shape ;
+  sh:scopeClass ic:場所型 ;
+  sh:constraint [
+    sh:nodeKind sh:IRI
+  ] ;
+  sh:property [
+    rdfs:label &quot;名称&quot; ;
+    sh:predicate ic:名称 ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:shape &lt;#名称&gt;
+  ] ;
+  sh:property [
+    rdfs:label &quot;地理座標&quot; ;
+    sh:predicate ic:地理座標 ;
+    sh:maxCount 1 ;
+    sh:shape &lt;#座標&gt;
+  ] ;
+  sh:property [
+    rdfs:label &quot;住所&quot; ;
+    sh:predicate ic:住所 ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:shape &lt;#住所&gt;
+  ]
+.
+
+&lt;#名称&gt; a sh:Shape ;
+  sh:property [
+    rdfs:label &quot;表記&quot; ;
+    sh:predicate ic:表記 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string
+  ] ;
+  sh:property [
+    rdfs:label &quot;カナ表記&quot; ;
+    sh:predicate ic:カナ表記 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string
+  ]
+.
+
+&lt;#座標&gt; a sh:Shape ;
+  sh:property [
+    rdfs:label &quot;緯度&quot; ;
+    sh:predicate ic:緯度 ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string
+  ] ;
+  sh:property [
+    rdfs:label &quot;経度&quot; ;
+    sh:predicate ic:経度 ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string
+  ]
+.
+
+&lt;#住所&gt; a sh:Shape ;
+  sh:property [
+    rdfs:label &quot;表記&quot; ;
+    sh:predicate ic:表記 ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string
+  ]
+.
+</code></pre></figure><h2 id="crossref-sec-3-4" title="3.4 項目データ "><span>3.4</span>
+項目データ </h2>
+<p>項目データは<a href="#crossref-sec-3-2">3.2 XML のデータモデルを記述するファイル群 </a> 及び<a href="#crossref-sec-3-3">3.3 RDF のデータモデルを記述するファイル群 </a> で示されたデータモデルにおいて値となる項目について、項目
+ごとのメタデータを記述したものであり、各項目は名称及び文字コレクションなどの情報
+により構成される。</p>
+<p>項目データは、JSON 形式のファイルであり、全体は”itemList” メンバーのみをもつオ
+ブジェクトとして表現される。”itemList”メンバーは項目の配列とする。各項目はオブジェクトであり、一つの”name” メンバー及び０個以上の”charCollectionList”メンバーをもつ。</p>
+<p>“name”メンバーは名称を指定する。</p>
+<p>”charCollectionList”メンバーは、項目の値型が xsd:string 及び、その拡張型の場合に、その項目に使用できる文字のコレクションを指定する。”charCollectionList”メンバーは、値型が xsd:string 又は、その拡張型でない項目に指定された場合は無視される。また、”charCollectionList”メンバーは省略可能であり、省略した場合にはDMD ヘッダーに指定された既定の文字コレクションに制限される。”charCollectionList”メンバーの値はJIS X 0221 附属書A に規定される組番号の配列とする。文字コレクションが２つ以上指定された場合は、その和集合を使用可能な文字のコレクションとする。</p>
+<p>項目データの例を次に示す。</p>
+<figure class="lst" id="crossref-lst-7" title="例7">
+<figcaption>例7: 項目データの例 </figcaption><pre><code>{
+  “itemList” : [
+    { &quot;name&quot;: &quot;ID&quot; },
+    { &quot;name&quot;: &quot;名前&quot;, &quot;charCollectionList&quot;: [256, 258] },
+    { &quot;name&quot;: &quot;緯度&quot; },
+    { &quot;name&quot;: &quot;経度&quot; },
+    { &quot;name&quot;: &quot;所在地&quot;, &quot;charCollectionList&quot;: [256, 258] }
+  ]
+}
+</code></pre></figure><h2 id="crossref-sec-3-5" title="3.5 ドキュメント"><span>3.5</span>
+ドキュメント</h2>
+<p>DMD には複数のドキュメント含めることができる。また、DMD に含めるドキュメント
+は任意の形式で作成することができる。</p>
+<p>ドキュメントでは、当該DMD の目的や想定される利用シーンなどに関して簡潔に説明
+すること。データモデルがもつ各データ項目について、その概要やデータの書式、値の制
+限、使用する文字コレクションなど、データ作成時に留意すべき事項について詳述する。
+また、当該DMD に対応する表形式のデータを作成する場合のサンプルなども含める。</p>
+<h2 id="crossref-sec-3-6" title="3.6 サンプル"><span>3.6</span>
+サンプル</h2>
+<p>当該DMD が定義するデータモデルに従って作成されたデータのサンプル。</p>
+<h2 id="crossref-sec-3-7" title="3.7 項目マッピング"><span>3.7</span>
+項目マッピング</h2>
+<p>項目マッピングは項目データの各項目と当該DMD で定義されたデータモデルとの対応
+関係をMetadata Vocabulary for Tabular Data
+(http://www.w3.org/TR/tabular-metadata/)の規定にしたがってメタデータとして記述したJSON 形式のファイルである。記述にあたっては、<a href="#crossref-sec-3-4">3.4 項目データ </a> の項目データの各項目の名称を順番に並べた表形式データをDMD で定義されるデータモデルに則ったデータへ対応づけるためのメタデータとする。例えば、<a href="#crossref-lst-7">例7</a> の項目データに対しては、次のような表形式データを対象としたメタデータとして記述する。</p>
+<figure class="lst" id="crossref-lst-8" title="例8">
+<figcaption>例8: マッピングメタデータの対象表形式データの例 </figcaption><pre><code>ID,名前,緯度,経度,所在地,
+</code></pre></figure><p>次に項目マッピングの例を示す。この例は、場所型の一部のプロパティを選択したものを
+データモデルとしたDMD の場合である。また、対象表形式データは、現在の場所に
+place.csv というファイル名で保存されていると仮定している。</p>
+<figure class="lst" id="crossref-lst-9" title="例9">
+<figcaption>例9: 項目マッピングの例 </figcaption><pre><code>{
+    &quot;@context&quot;: [&quot;http://www.w3.org/ns/csvw&quot;, { &quot;@language&quot;: &quot;ja&quot; }],
+    &quot;url&quot;: &quot;./place.csv&quot;,
+    &quot;tableSchema&quot;: {
+        &quot;columns&quot;: [
+            {
+                &quot;name&quot;: &quot;place&quot;,
+                &quot;titles&quot;: &quot;ID&quot;,
+                &quot;aboutUrl&quot;: &quot;http://example.org/{place}&quot;,
+                &quot;propertyUrl&quot;: &quot;rdf:type&quot;,
+                &quot;valueUrl&quot;: &quot;http://imi.ipa.go.jp/ns/core/rdf#場所型&quot;
+            },
+            {
+                &quot;name&quot;: &quot;name&quot;,
+                &quot;titles&quot;: &quot;名前&quot;,
+                &quot;aboutUrl&quot;: &quot;genid:name{place}&quot;,
+                &quot;propertyUrl&quot;: &quot;http://imi.ipa.go.jp/ns/core/rdf#表記&quot;
+            },
+            {
+                &quot;name&quot;: &quot;lat&quot;,
+                &quot;titles&quot;: &quot;緯度&quot;,
+                &quot;aboutUrl&quot;: &quot;genid:geo{place}&quot;,
+                &quot;propertyUrl&quot;: &quot;http://imi.ipa.go.jp/ns/core/rdf#緯度&quot;
+            },
+            {
+                &quot;name&quot;: &quot;long&quot;,
+                &quot;titles&quot;: &quot;経度&quot;,
+                &quot;aboutUrl&quot;: &quot;genid:geo{place}&quot;,
+                &quot;propertyUrl&quot;: &quot;http://imi.ipa.go.jp/ns/core/rdf#経度&quot;
+            },
+            {
+                &quot;name&quot;: &quot;addr&quot;,
+                &quot;titles&quot;: &quot;所在地&quot;,
+                &quot;aboutUrl&quot;: &quot;genid:addr{place}&quot;,
+                &quot;propertyUrl&quot;: &quot;http://imi.ipa.go.jp/ns/core/rdf#表記&quot;
+            },
+            {
+                &quot;virtual&quot;: true,
+                &quot;aboutUrl&quot;: &quot;http://example.org/{place}&quot;,
+                &quot;propertyUrl&quot;: &quot;http://imi.ipa.go.jp/ns/core/rdf#名称&quot;,
+                &quot;valueUrl&quot;: &quot;genid:name{place}&quot;
+            },
+            {
+                &quot;virtual&quot;: true,
+                &quot;aboutUrl&quot;: &quot;http://example.org/{place}&quot;,
+                &quot;propertyUrl&quot;: &quot;http://imi.ipa.go.jp/ns/core/rdf#地理座標&quot;,
+                &quot;valueUrl&quot;: &quot;genid:geo{place}&quot;
+            },
+            {
+                &quot;virtual&quot;: true,
+                &quot;aboutUrl&quot;: &quot;http://example.org/{place}&quot;,
+                &quot;propertyUrl&quot;: &quot;http://imi.ipa.go.jp/ns/core/rdf#住所&quot;,
+                &quot;valueUrl&quot;: &quot;genid:addr{place}&quot;
+            }
+        ]
+    }
+}
+</code></pre></figure>
+  </article>
+  <footer>
+    <a href="http://www.meti.go.jp/">経済産業省（法人番号 4000012090001）</a>,
+    <a href="http://www.ipa.go.jp/">独立行政法人 情報処理推進機構（法人番号 5010005007126）</a>
+  </footer>
+</div>
+</body>
+</html>
+
