@@ -5,10 +5,10 @@ var md = require('markdown-it')();
 md.use(require('./markdown-it-imi'));
 
 var src = fs.readFileSync(process.argv[2], "UTF-8");
-var dst = md.render(src);
+var env = {};
+var dst = md.render(src, env);
 
-var title = dst.split("\n").find(a => a.match(/<h1>/));
-title = title.replace(/^.*<h1>/, "").replace(/<\/h1>.*$/, "");
+var title = env.title;
 
 console.log(`<!doctype html>
 <html>

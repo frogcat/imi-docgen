@@ -81,14 +81,6 @@ module.exports = function(md, disable_img_output) {
     state.env.crossref = state.env.crossref || {};
     var heading = null;
     state.tokens.filter(a => a.type === 'heading_open').forEach(self => {
-      if (heading == null) {
-        heading = [];
-        return;
-      }
-      var level = self.markup.length;
-      heading = heading = heading.concat([0, 0, 0, 0, 0, 0]).slice(0, level);
-      heading[heading.length - 1]++;
-
       var text = "";
       state.tokens[state.tokens.indexOf(self) + 1].children.forEach(a => {
         if (a.type === 'crossref_reg')
@@ -96,6 +88,15 @@ module.exports = function(md, disable_img_output) {
         else if (a.type === 'text')
           text += a.content;
       });
+
+      if (heading == null) {
+        heading = [];
+        state.env.title = text;
+        return;
+      }
+      var level = self.markup.length;
+      heading = heading = heading.concat([0, 0, 0, 0, 0, 0]).slice(0, level);
+      heading[heading.length - 1]++;
 
       self.meta = heading.join(".") + (heading.length === 1 ? "." : "");
       self.attrPush(['id', "crossref-sec-" + heading.join("-")]);
