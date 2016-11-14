@@ -10,6 +10,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.1.0/markdown-it.min.js"></script>
   <script src="https://unpkg.com/markdown-it-deflist@2.0.1/dist/markdown-it-deflist.js"></script>
   <script src="https://unpkg.com/markdown-it-footnote@3.0.1/dist/markdown-it-footnote.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
   <script src="markdown-it-imi.js"></script>
 </head>
 
@@ -18,6 +19,7 @@
     <form>
       <textarea title="ここに UTF-8 の Markdown ファイルをドラッグ＆ドロップすると反映されます"></textarea>
       <button>render</button>
+      <button id="save">Save as HTML</button>
     </form>
     <hr/>
     <header>
@@ -45,6 +47,30 @@
       }
       return false;
     });
+
+    $("#save").click(function() {
+      $.get("template.html").then(function(html) {
+        try {
+          var env = {};
+          var dst = window.markdownit()
+            .use(window.markdownitDeflist)
+            .use(window.markdownitFootnote)
+            .use(window.markdownitIMI)
+            .render($("textarea").val(), env);
+          html = html.replace("${dst}", dst);
+          html = html.replace("${title}", env.title);
+          var blob = new Blob(html.split("\n"), {
+            type: "text/plain;charset=utf-8"
+          });
+          saveAs(blob, env.title + ".html");
+          console.log(html);
+        } catch (e) {
+          console.log(e);
+        }
+      });
+      return false;
+    });
+
 
     $.get("example.md").then(function(txt) {
       $("textarea").val(txt);
