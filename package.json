@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "browserify": "./node_modules/.bin/browserify -s markdownitIMI -o docs/markdown-it-imi.js markdown-it-imi.js",
-    "test": "node main.js docs/example.md > docs/example.html"
+    "test": "node main.js docs/template.html docs/example.md > docs/example.html"
   },
   "repository": {
     "type": "git",
