@@ -88,6 +88,7 @@
         var promises = [];
         var images = {};
         var md = null;
+        var dir = null;
         zip.forEach((path, file) => {
           if (path.match(/(jpeg|jpg)$/))
             promises.push(file.async("base64").then(a => {
@@ -99,17 +100,20 @@
               images[path] = "data:image/png;base64," + a;
               return true;
             }));
-          else if (path.match(/md$/))
+          else if (path.match(/md$/)) {
+            if (path.indexOf("/") != -1)
+              dir = path.substring(0, path.lastIndexOf("/") + 1);
             promises.push(file.async("string").then(a => {
               md = a;
               md = md.substring(md.indexOf("#"));
               return true;
             }));
+          }
         });
         Promise.all(promises).then(a => {
           $("textarea").val(md);
           Object.keys(images).forEach(key => {
-            md = md.replace(key, images[key]);
+            md = md.replace(dir ? key.replace(dir, "") : key, images[key]);
           });
 
           try {
