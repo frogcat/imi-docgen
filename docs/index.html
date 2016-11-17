@@ -102,6 +102,7 @@
           else if (path.match(/md$/))
             promises.push(file.async("string").then(a => {
               md = a;
+              md = md.substring(md.indexOf("#"));
               return true;
             }));
         });
